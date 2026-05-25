@@ -1,8 +1,8 @@
 {
-	"name": "Inoreader",
+	"name": "Three Pane Reader",
 	"author": "caglaryalcin",
 	"description": "An Inoreader-style three-pane reading layout for FreshRSS: navigation, article list, and article content side by side.",
 	"version": 1.17,
-	"entrypoint": "Inoreader",
+	"entrypoint": "ThreePaneReader",
 	"type": "user"
 }

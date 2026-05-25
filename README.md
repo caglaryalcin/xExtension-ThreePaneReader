@@ -1,4 +1,4 @@
-# xExtension-Inoreader
+# Three Pane Reader
 
 A [FreshRSS](https://freshrss.org/) extension that turns the default reading view into a
 clean, **three‑pane [Inoreader](https://www.inoreader.com/)-style** interface: navigation on
@@ -55,32 +55,31 @@ This assumes you already have a running FreshRSS instance. Installing the extens
 dropping its folder into FreshRSS's `extensions/` directory and enabling it from the web UI.
 
 > ⚠️ **The folder name matters.** FreshRSS requires the directory to be named
-> `xExtension-<entrypoint>`. The entrypoint for this extension is `Inoreader`, so the folder
-> **must be named exactly `xExtension-Inoreader`** (case‑sensitive on Linux). Cloning this repo
-> gives you a lowercase `xextension-inoreader` folder — clone with an explicit target (as below)
-> or rename it, otherwise FreshRSS will not detect it.
+> `xExtension-<entrypoint>`. The entrypoint for this extension is `ThreePaneReader`, so the folder
+> **must be named exactly `xExtension-ThreePaneReader`** (case‑sensitive on Linux). Keep the
+> folder name you get when cloning — don't rename it, otherwise FreshRSS will not detect it.
 
 ### 1. Put the files in place
 
-The goal is to have the extension's files at `<FreshRSS>/extensions/xExtension-Inoreader/`:
+The goal is to have the extension's files at `<FreshRSS>/extensions/xExtension-ThreePaneReader/`:
 
 ```bash
 cd /path/to/FreshRSS/extensions
-git clone https://github.com/caglaryalcin/xextension-inoreader.git xExtension-Inoreader
+git clone https://github.com/caglaryalcin/xExtension-ThreePaneReader.git
 # make sure the web server user can read it (skip if not applicable)
-chown -R www-data:www-data xExtension-Inoreader
+chown -R www-data:www-data xExtension-ThreePaneReader
 ```
 
 > **Running FreshRSS in Docker/Kubernetes?** The extensions directory inside the official image
 > is `/var/www/FreshRSS/extensions/`. Place the folder there (volume mount, `docker cp`, or
-> `kubectl cp`) under the same `xExtension-Inoreader` name. Note that files copied into a
+> `kubectl cp`) under the same `xExtension-ThreePaneReader` name. Note that files copied into a
 > container/pod are lost on restart — for a durable install, bake it into your image or mount it
 > from a persistent volume.
 
 ### 2. Enable it in FreshRSS
 
 1. Open FreshRSS → **Settings (gear) → Extensions**.
-2. Find **Inoreader** in the list and click **Enable**.
+2. Find **Three Pane Reader** in the list and click **Enable**.
 3. Reload the main view. You should see the three‑pane layout (at desktop width).
 
 To update later: `git pull` inside the folder (or re‑copy the files) and hard‑refresh the page.
@@ -123,6 +122,11 @@ There are no settings in the UI — appearance is controlled directly in the sou
   ad blocker like uBlock Origin processing every request). Measure server‑side first.
 
 ---
+
+## Credits
+
+Based on [nicofrand's ThreePanesView](https://framagit.org/nicofrand/xextension-threepanesview),
+re‑themed into a compact, Inoreader‑style dark layout.
 
 ## Disclaimer
 
