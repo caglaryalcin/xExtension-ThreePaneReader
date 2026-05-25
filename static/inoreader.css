@@ -1,0 +1,715 @@
+@media (min-width: 800px)
+{
+    #bigMarkAsRead
+    {
+        padding: 30px;
+    }
+
+    /* Avoid the on-load flash: keep the reading area hidden until inoreader.js has
+       finished building the panes (it then adds html.inoreader-ready). The animation is
+       a pure-CSS failsafe that reveals after 2s even if the script never runs. */
+    html:not(.inoreader-ready) #stream,
+    html:not(.inoreader-ready) #inoreadercontainer
+    {
+        visibility: hidden;
+        animation: inoreader-reveal 0s linear 2s forwards;
+    }
+
+    #inoreadercontainer
+    {
+        background: inherit;
+        display: flex;
+        overflow: hidden;
+
+        height: calc(100% - 48px);
+    }
+
+    #inoreadercontainer > *
+    {
+        box-sizing: border-box;
+        width: 50%;
+        flex-shrink: 0;
+        flex-grow: 1;
+        overflow: auto;
+        padding: 0;
+        margin: 0;
+        /* Override the .prompt max-width */
+        max-width: initial;
+
+        /* Thin, dark scrollbars so the right divider doesn't sit next to the
+           ugly white Chrome (Windows) scrollbar track. */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(128, 128, 128, 0.5) transparent;
+    }
+
+    #inoreadercontainer > *::-webkit-scrollbar
+    {
+        width: 10px;
+        height: 10px;
+    }
+
+    #inoreadercontainer > *::-webkit-scrollbar-track,
+    #inoreadercontainer > *::-webkit-scrollbar-corner
+    {
+        background: transparent;
+    }
+
+    #inoreadercontainer > *::-webkit-scrollbar-thumb
+    {
+        background-color: rgba(128, 128, 128, 0.5);
+        border-radius: 5px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+
+    #inoreadercontainer > *::-webkit-scrollbar-thumb:hover
+    {
+        background-color: rgba(128, 128, 128, 0.75);
+    }
+
+    /* See https://framagit.org/nicofrand/xextension-threepanesview/-/issues/29 */
+    #inoreadercontainer .transition {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #inoreadercontainer .transition > * {
+        position: unset;
+    }
+
+    body:not(.reader) #stream .flux_content
+    {
+        display: none;
+    }
+
+    body:not(.reader) #stream .day
+    {
+        position: relative;
+    }
+
+    #stream .flux_header
+    {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto auto auto;
+        grid-template-rows: auto auto auto;
+        align-content: center;
+        align-items: center;
+        column-gap: 8px;
+        row-gap: 1px;
+        min-height: 82px;
+        height: auto !important;
+        padding: 6px 10px !important;
+        box-sizing: border-box;
+    }
+
+    /* The title li only wraps the title + date; let its children join the grid directly
+       (display: contents) so the title and date can sit on separate rows. */
+    #stream .flux .item.titleAuthorSummaryDate
+    {
+        display: contents !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Thumbnail: square, left, spanning all rows — like Inoreader. */
+    #stream .flux_header .item.thumbnail
+    {
+        grid-column: 1;
+        grid-row: 1 / 4;
+        align-self: center;
+        width: 64px !important;
+        height: 64px !important;
+        min-width: 64px;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+        border-radius: 6px;
+        background: rgba(128, 128, 128, 0.12);
+    }
+
+    #stream .flux_header .item.thumbnail img
+    {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        object-fit: cover;
+        border-radius: 6px;
+        margin: 0 !important;
+        background: transparent !important;
+        opacity: 1 !important;
+        filter: none !important;
+        mix-blend-mode: normal !important;
+    }
+
+    /* Title: top row, clamped to 2 lines with an ellipsis so the row height stays fixed
+       however long the title is. */
+    #stream .flux .item-element.title,
+    #stream .flux .item.title
+    {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: end;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden !important;
+        white-space: normal !important;
+        max-height: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        line-height: 1.25;
+    }
+
+    /* Site name on its own line, date on the line below it, flush with the title's left edge. */
+    #stream .flux_header .item.website
+    {
+        grid-column: 2;
+        grid-row: 2;
+        align-self: center;
+        justify-self: start !important;
+        min-width: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+        font-size: 12px;
+    }
+
+    #stream .flux_header .item.website > .item-element,
+    #stream .flux_header .item.website > a
+    {
+        display: flex !important;
+        align-items: center;
+        min-width: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+        line-height: 1.2;
+    }
+
+    /* The feed favicon doesn't load on this instance (shows a broken red X) and the theme pins
+       it absolutely on hover, where it overlapped the site name — drop it so the name is the
+       leftmost thing on the line, Inoreader-style. */
+    #stream .flux_header .item.website .favicon
+    {
+        display: none !important;
+    }
+
+	#stream .flux_header .item.website > a,
+	#stream .flux:hover .flux_header .item.website > a,
+	#stream .flux_header .item.website > .item-element 
+	{
+		position: static !important;
+		background: transparent !important;
+		box-shadow: none !important;
+		z-index: 1 !important;
+	}
+
+    /* High specificity + locked layout so the theme's hover rules can't clip the site name
+       (the row's "reveal on hover" styles were cutting it off). */
+    #stream .flux .flux_header .item.website .websiteName
+    {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-width: 0;
+        max-width: 100%;
+        max-height: none !important;
+        height: auto !important;
+        line-height: 1.2 !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* High specificity + offset resets: the theme pins the date with an absolute,
+       #stream-scoped rule that loads after this file, so we have to out-specify it to pull the
+       date back into the grid flow (col 2, row 3) under the site name instead of the far right. */
+    #stream .flux .flux_header .item-element.date
+    {
+        grid-column: 2;
+        grid-row: 3;
+        align-self: start;
+        justify-self: start !important;
+        position: static !important;
+        inset: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        float: none !important;
+        display: inline-block !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: nowrap;
+        background-color: transparent !important;
+        font-size: 12px;
+        opacity: 0.75;
+    }
+
+    /* Action icons grouped on the right, each spanning all rows and vertically centred. */
+    #stream .flux_header .item.manage:has(.read)     { grid-column: 3; }
+    #stream .flux_header .item.manage:has(.bookmark) { grid-column: 4; }
+    #stream .flux_header .item.link                  { grid-column: 5; }
+
+    #stream .flux_header .item.manage,
+    #stream .flux_header .item.link
+    {
+        grid-row: 1 / 4;
+        align-self: center;
+        justify-self: center;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #inoreader
+    {
+        border-left: 1px solid;
+    }
+
+    #inoreader > .flux
+    {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-left: none;
+        background-color: transparent;
+    }
+
+    #inoreader > .flux > .flux_header
+    {
+        display: none !important;
+    }
+
+    #inoreader > .flux > .content
+    {
+        min-height: 0;
+        flex-shrink: 0;
+        flex-grow: 1;
+    }
+
+    #inoreader > .flux > .horizontal-list
+    {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    #inoreader > .flux > iframe
+    {
+        height: 100%;
+        width: 100%;
+        border: 0;
+       flex-grow: 1;
+    }
+
+    #inoreader .dropdown-menu
+    {
+        bottom: 100%;
+    }
+
+    #inoreader .dropdown-target:target ~ .dropdown-menu
+    {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #inoreader .dropdown-menu::after
+    {
+        top: auto;
+        transform: rotate(-135deg);
+    }
+
+    #mark-read-aside
+    {
+        overflow: hidden;
+    }
+
+    /* Specific to nord theme */
+    #inoreader > .flux > .content .website .favicon
+    {
+        position: initial;
+    }
+}
+
+/* Draggable dividers (grab anywhere along the height to drag left/right). */
+.inoreader-splitter
+{
+    position: fixed;
+    width: 9px;
+    z-index: 1000;
+    cursor: col-resize;
+    background: transparent;
+    touch-action: none;
+}
+
+.inoreader-splitter:hover,
+body.inoreader-resizing .inoreader-splitter
+{
+    background: rgba(128, 128, 128, 0.4);
+}
+
+body.inoreader-resizing
+{
+    cursor: col-resize;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Keep the iframe (3rd pane website) from swallowing pointer events while dragging. */
+body.inoreader-resizing iframe
+{
+    pointer-events: none;
+}
+
+/* Make every sidebar entry title the same small size (feeds AND categories).
+   Target the .title spans directly (not the <a>) so category titles match feed titles,
+   and use rem so a theme's larger category font can't inflate them (em would compound
+   with the parent and leave categories bigger). */
+#sidebar .title,
+.aside_feed .title,
+.aside.aside_feed .title
+{
+    font-size: .875rem !important;
+}
+
+/* Speed up the sidebar category expand/collapse (slide-down) animation. */
+#sidebar .tree-folder-items,
+#sidebar .tree-folder,
+.aside_feed .tree-folder-items,
+.aside_feed .tree-folder
+{
+    transition-duration: 0.1s !important;
+    animation-duration: 0.1s !important;
+}
+
+/* Take the top header out of the layout so the panes stay full-height, but float just
+   the settings (gear) menu in the top-right corner so profile/config stays reachable. */
+header.header
+{
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 4px !important;
+    overflow: visible !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    z-index: 99999 !important;
+}
+
+/* Hide the logo and the search box; keep only the gear (configure) dropdown. */
+header.header .item.title,
+header.header .item.search
+{
+    display: none !important;
+}
+
+header.header .item.configure
+{
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 0 !important;
+}
+
+/* Gear (configure) button — arka planı genel #16191C ile aynı olsun. */
+header.header .item.configure .dropdown-toggle
+{
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #16191C !important;
+    border-radius: 6px !important;
+    padding: 6px !important;
+}
+
+header.header .item.configure .dropdown-toggle .icon
+{
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Hide the "My labels" area entirely. */
+#tags
+{
+    display: none !important;
+}
+
+/* Failsafe keyframe for the on-load flash hide rule above. */
+@keyframes inoreader-reveal
+{
+    to { visibility: visible; }
+}
+
+/* ==========================================================================
+   PERFECT VERTICAL CENTER & COMPACT FIT FOR TEXT BLOCK
+   ========================================================================== */
+
+/* 1. Grid satırlarını 'max-content' yaparak birbirine sıkıştırıyoruz.
+   'align-content: center' sayesinde bu sıkışık üçlü blok resmin dikey ortasına oturur. */
+html body #stream .flux_header {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto auto auto !important;
+    grid-template-rows: max-content max-content max-content !important; /* Boşluk yayılımını engelle */
+    column-gap: 10px !important;
+    row-gap: 1px !important; /* Satırlar arası mesafeyi daraltarak sığdırıyoruz */
+    align-content: center !important; /* Tüm yazı bloğunu dikeyde tam ortala */
+    align-items: center !important;
+    
+    height: 76px !important;
+    min-height: 76px !important;
+    max-height: 76px !important;
+    padding: 6px 10px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* Başlık kapsayıcılarını grid akışından çıkarıyoruz */
+html body #stream .flux_header .item.title,
+html body #stream .flux_header .item.titleAuthorSummaryDate {
+    display: contents !important;
+}
+
+/* 2. Başlık linkini dikey alana kusursuz sığması için optimize ediyoruz */
+html body #stream .flux_header .item-element.title {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important; /* Dikeyde hücreyi ortala */
+    position: static !important;
+    
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    max-height: 2.9em !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    word-break: break-word !important;
+}
+
+/* 3. Site adını (Website) ortalayıp 2. satıra konumlandırıyoruz */
+html body #stream .flux_header a:has(.websiteName),
+html body #stream .flux_header .item-element:has(.websiteName),
+html body #stream .flux_header .item.website {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    align-self: center !important; /* Tam dikey orta */
+    justify-self: start !important;
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    
+    display: flex !important;
+    align-items: center !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+}
+
+/* 4. Tarihi (Date) ortalayıp 3. satıra yerleştiriyoruz */
+html body #stream .flux_header .item-element.date {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    align-self: center !important; /* Tam dikey orta */
+    justify-self: start !important;
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 5. Sol görseli ve sağ butonları dikeyde tam merkeze hizalıyoruz */
+html body #stream .flux_header .item.thumbnail {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    align-self: center !important;
+    margin: 0 !important;
+}
+
+html body #stream .flux_header .item.manage,
+html body #stream .flux_header .item.link {
+    grid-row: 1 / 4 !important;
+    align-self: center !important;
+}
+
+/* Klasör ve kategori sağındaki gri unread sayaç balonunu küçültme */
+html body #sidebar [data-unread]::after,
+html body #tree_pane [data-unread]::after,
+html body .title[data-unread]::after,
+html body [data-unread]::after {
+    font-size: 11.5px !important;     /* Sayıyı 10px'ten 11.5px'e çıkardık */
+    padding: 1.5px 5.5px !important;  /* İç boşluğu hafifçe artırdık */
+    min-width: 16px !important;       /* Minimum genişliği 16px yaptık */
+    line-height: 13px !important;     /* Yükseklik dengesini ayarladık */
+    height: auto !important;
+    border-radius: 10px !important;
+	
+	/* Dikey ortalama kilit kuralları */
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Gün bazlı bölücü çizgileri (Received yesterday vs.) tamamen ortadan kaldırır */
+#stream .transition,
+#inoreadercontainer .transition {
+    display: none !important;
+}
+
+/* Sağdaki aksiyon ikonlarının (okundu, favori, link) arasındaki boşlukları daraltma */
+html body #stream .flux_header .item.manage,
+html body #stream .flux_header .item.link {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+html body #stream .flux_header .item.manage > a,
+html body #stream .flux_header .item.link > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 15px !important;  /* Butonların genişliğini daraltarak birbirine yakınlaştırır */
+    height: 15px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Inoreader'dan alınan birebir tipografi, ağırlık, renk ve dekorasyon kilitleri */
+html body #stream .flux_header .item-element.title {
+    font-family: 'OpenSans', 'Open Sans', sans-serif !important;
+    font-size: 13.2px !important;
+    font-weight: 700 !important;
+    color: #C1C4C7 !important;
+    line-height: 17.6px !important;
+    
+    /* İnce dekorasyon detaylarının eşitlemesi */
+    font-style: normal !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+    letter-spacing: normal !important;
+    background-color: transparent !important;
+}
+
+/* Hover durumunda rengin bozulmasını engelleme */
+html body #stream .flux_header .item-element.title:hover {
+    color: #C1C4C7 !important;
+    text-decoration: none !important;
+}
+
+/* Okunmuş (Read) makale başlığı */
+html body #stream .flux:not(.not_read) .flux_header .item-element.title,
+html body #stream .flux.read .flux_header .item-element.title {
+    color: rgb(128, 126, 163) !important;
+    opacity: 0.5 !important;
+}
+
+/* Okunmamış (Unread) makale başlığı */
+html body #stream .flux.not_read .flux_header .item-element.title {
+    color: rgb(193, 196, 199) !important;
+    opacity: 1 !important;
+}
+
+/* Hover durumunda temanın ürettiği sahte kutuları temizleme */
+html body #stream .flux:hover a:has(.websiteName),
+html body #stream .flux_header:hover a:has(.websiteName) {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* ==========================================================================
+   GENEL ARKA PLAN RENGİ — #16191C
+   Tema (dark.css) tamamen CSS değişkenleriyle çalışıyor. Koyu yüzey
+   renklerini :root'tan ezerek tüm arayüzü tek noktadan #16191C yapıyoruz;
+   !important temanın değerlerini geçer, böylece tek tek element kuralına
+   gerek kalmaz. Hover/aktif tonları temanın kendi (mavi) vurgusundan gelir.
+   ========================================================================== */
+:root {
+    --frss-background-color: #16191C !important;
+    --frss-background-color-transparent: #16191Caa !important;
+    --background-color-light: #16191C !important;
+    --background-color-grey: #16191C !important;
+    --dark-background-color1: #16191C !important;
+    --dark-background-color16: #16191C !important;
+
+    /* Hover tonları taban renkten biraz açık olsun ki ayrım belli olsun */
+    --background-color-flux-hover: #1e232a !important;
+    --unread-article-background-color-hover: #1e232a !important;
+    --favorite-article-background-color-hover: #1e232a !important;
+}
+
+/* Güvenlik ağı: değişken kullanmayan ana kapsayıcıları da garanti altına al. */
+html body,
+html body #global,
+html body .nav_menu,
+html body #stream,
+html body #aside_feed,
+html body #sidebar,
+html body #inoreadercontainer,
+html body .dropdown-menu {
+    background-color: #16191C !important;
+}
+
+/* Sol menü: okunmamış makalesi olan kategori başlığını kalın yap.
+   data-unread="0" (tamamı okunmuş) ise dokunma. Sadece kategoriler
+   (.tree-folder-title), tek tek feed'ler değil. */
+html body #sidebar .tree-folder-title .title:not([data-unread="0"]) {
+    font-weight: 700 !important;
+}
+
+/* Content images keep a transparent background so they sit on the dark theme instead of
+   getting a hard white box (transparent PNGs/logos). opacity/filter/mix-blend resets stay so
+   the theme can't dim or blend them. */
+html body #inoreader .content .text img,
+html body #inoreader .content figure img,
+html body .flux_content .content .text img,
+html body .flux_content .content figure img,
+html body .content .text img:not(.favicon):not(.icon) {
+    background: transparent !important;
+    opacity: 1 !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+}
+
+html body #stream .flux_header .item.website {
+    pointer-events: none !important;
+}
+html body #stream .flux_header .item.website a {
+    pointer-events: auto !important;
+}
