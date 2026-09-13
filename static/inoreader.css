@@ -361,7 +361,7 @@
         transform: rotate(-135deg);
     }
 
-    #mark-read-aside
+    #mark-read-aside, .mark-read-aside
     {
         overflow: hidden;
     }
