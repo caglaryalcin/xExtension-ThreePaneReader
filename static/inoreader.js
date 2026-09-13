@@ -76,7 +76,7 @@
                 var availableHeight = window.innerHeight - topOffset;
                 wrapper.style.height = `${availableHeight}px`;
 
-                var menuForm = document.getElementById("mark-read-aside");
+                var menuForm = document.querySelector("#mark-read-aside, .mark-read-aside");
                 var navEntries = document.getElementById("nav_entries");
 
                 if (menuForm)
